@@ -13,7 +13,7 @@
       <div>
         <p class="kicker">Gestion de cave</p>
         <h1>Ma cave à vins</h1>
-        <p class="intro">Ajoutez vos bouteilles, suivez vos stocks et retrouvez vos vins en un clin d’œil.</p>
+        <p class="intro">Ajoutez vos bouteilles, suivez vos stocks et estimez rapidement la valeur de votre cave.</p>
       </div>
       <div class="hero-icon" aria-hidden="true">🍷</div>
     </header>
@@ -22,6 +22,7 @@
       <div class="stat"><span>Références</span><strong id="wineCount">0</strong></div>
       <div class="stat"><span>Bouteilles</span><strong id="bottleCount">0</strong></div>
       <div class="stat"><span>Vins rouges</span><strong id="redCount">0</strong></div>
+      <div class="stat"><span>Valeur totale</span><strong id="totalValue">0 €</strong></div>
     </section>
 
     <div class="layout">
@@ -38,6 +39,7 @@
             <label>Conditionnement<select id="packaging" name="packaging"><option value="bottle">Bouteilles</option><option value="case6">Caisses de 6</option><option value="case12">Caisses de 12</option></select></label>
             <label>Quantité<input id="quantity" name="quantity" type="number" min="0" step="1" required placeholder="6"></label>
           </div>
+          <label>Cote iDealwine (€ / bouteille)<input id="idealwinePrice" name="idealwinePrice" type="number" min="0" step="0.01" required placeholder="42.50"></label>
           <div class="form-actions"><button class="button primary" type="submit" id="submitButton">Ajouter le vin</button><button class="button secondary hidden" type="button" id="cancelButton">Annuler</button></div>
         </form>
       </section>
@@ -48,7 +50,7 @@
       </section>
     </div>
   </main>
-  <template id="wineTemplate"><article class="wine-item"><div class="wine-main"><span class="wine-color"></span><div><h3 class="wine-name"></h3><p class="wine-appellation"></p></div></div><div class="wine-details"><span class="wine-vintage"></span><strong class="wine-quantity"></strong><span class="wine-packaging"></span></div><div class="wine-actions"><button class="edit" type="button">Modifier</button><button class="delete" type="button">Supprimer</button></div></article></template>
+  <template id="wineTemplate"><article class="wine-item"><div class="wine-main"><span class="wine-color"></span><div><h3 class="wine-name"></h3><p class="wine-appellation"></p></div></div><div class="wine-details"><span class="wine-vintage"></span><strong class="wine-quantity"></strong><span class="wine-packaging"></span><span class="wine-price"></span></div><div class="wine-actions"><button class="edit" type="button">Modifier</button><button class="delete" type="button">Supprimer</button></div></article></template>
   <script src="app.js"></script>
 </body>
 </html>
