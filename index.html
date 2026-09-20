@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gestion simple de cave à vins">
+  <title>Ma cave à vins</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="kicker">Gestion de cave</p>
+        <h1>Ma cave à vins</h1>
+        <p class="intro">Ajoutez vos bouteilles, suivez vos stocks et retrouvez vos vins en un clin d’œil.</p>
+      </div>
+      <div class="hero-icon" aria-hidden="true">🍷</div>
+    </header>
+
+    <section class="stats" aria-label="Résumé de la cave">
+      <div class="stat"><span>Références</span><strong id="wineCount">0</strong></div>
+      <div class="stat"><span>Bouteilles</span><strong id="bottleCount">0</strong></div>
+      <div class="stat"><span>Vins rouges</span><strong id="redCount">0</strong></div>
+    </section>
+
+    <div class="layout">
+      <section class="card form-card">
+        <div class="section-heading"><div><p class="kicker">Inventaire</p><h2 id="formTitle">Ajouter un vin</h2></div></div>
+        <form id="wineForm">
+          <label>Nom du vin<input id="name" name="name" required placeholder="Ex. Château Margaux"></label>
+          <label>Appellation<input id="appellation" name="appellation" required placeholder="Ex. Margaux"></label>
+          <div class="two-columns">
+            <label>Millésime<input id="vintage" name="vintage" type="number" min="1900" max="2100" required placeholder="2020"></label>
+            <label>Couleur<select id="color" name="color"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Effervescent</option></select></label>
+          </div>
+          <div class="two-columns">
+            <label>Conditionnement<select id="packaging" name="packaging"><option value="bottle">Bouteilles</option><option value="case6">Caisses de 6</option><option value="case12">Caisses de 12</option></select></label>
+            <label>Quantité<input id="quantity" name="quantity" type="number" min="0" step="1" required placeholder="6"></label>
+          </div>
+          <div class="form-actions"><button class="button primary" type="submit" id="submitButton">Ajouter le vin</button><button class="button secondary hidden" type="button" id="cancelButton">Annuler</button></div>
+        </form>
+      </section>
+
+      <section class="card list-card">
+        <div class="section-heading list-heading"><div><p class="kicker">Votre sélection</p><h2>Les vins en cave</h2></div><input class="search" id="search" type="search" placeholder="Rechercher..."></div>
+        <div id="wineList" class="wine-list" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+  <template id="wineTemplate"><article class="wine-item"><div class="wine-main"><span class="wine-color"></span><div><h3 class="wine-name"></h3><p class="wine-appellation"></p></div></div><div class="wine-details"><span class="wine-vintage"></span><strong class="wine-quantity"></strong><span class="wine-packaging"></span></div><div class="wine-actions"><button class="edit" type="button">Modifier</button><button class="delete" type="button">Supprimer</button></div></article></template>
+  <script src="app.js"></script>
+</body>
+</html>
