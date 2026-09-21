@@ -7,11 +7,16 @@ const $ = (selector) => document.querySelector(selector);
 const form = $('#wineForm');
 const list = $('#wineList');
 const template = $('#wineTemplate');
+const sortSelect = $('#sortBy');
 let wines = readWines();
 let editingId = null;
 
+function sanitizeWine(wine){
+  if (!wine || typeof wine !== 'object') return wine;
+  return { ...wine, color: String(wine.color ?? 'Rouge').trim() };
+}
 function readWines(){
-  try { const value = JSON.parse(localStorage.getItem(STORAGE_KEY)); return Array.isArray(value) ? value : [...defaultWines]; }
+  try { const value = JSON.parse(localStorage.getItem(STORAGE_KEY)); return Array.isArray(value) ? value.map(sanitizeWine) : [...defaultWines]; }
   catch { return [...defaultWines]; }
 }
 function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(wines)); }
@@ -19,12 +24,35 @@ function bottles(wine){ return wine.packaging === 'case6' ? wine.quantity * 6 : 
 function packagingLabel(value){ return {bottle:'Bouteille(s)',case6:'Caisse de 6',case12:'Caisse de 12'}[value] || 'Bouteille(s)'; }
 function formatCurrency(value){ return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR'}).format(value); }
 function wineValue(wine){ return bottles(wine) * Number(wine.idealwinePrice || 0); }
+function getSortedWines(items){
+  const sorted = [...items];
+  const sortKey = sortSelect.value;
+  switch (sortKey) {
+    case 'name-asc':
+      return sorted.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+    case 'name-desc':
+      return sorted.sort((a, b) => b.name.localeCompare(a.name, 'fr'));
+    case 'vintage-desc':
+      return sorted.sort((a, b) => Number(b.vintage) - Number(a.vintage));
+    case 'vintage-asc':
+      return sorted.sort((a, b) => Number(a.vintage) - Number(b.vintage));
+    case 'price-asc':
+      return sorted.sort((a, b) => (Number(a.idealwinePrice) || 0) - (Number(b.idealwinePrice) || 0));
+    case 'price-desc':
+      return sorted.sort((a, b) => (Number(b.idealwinePrice) || 0) - (Number(a.idealwinePrice) || 0));
+    case 'color-asc':
+      return sorted.sort((a, b) => a.color.localeCompare(b.color, 'fr'));
+    default:
+      return sorted;
+  }
+}
 function render(){
   const query = $('#search').value.trim().toLowerCase();
   const filtered = wines.filter(w => [w.name,w.appellation,w.color,String(w.vintage)].some(v => v.toLowerCase().includes(query)));
+  const sorted = getSortedWines(filtered);
   list.innerHTML = '';
-  if(!filtered.length){ list.innerHTML='<div class="empty"><strong>Aucun vin trouvé</strong>Ajoutez un vin ou modifiez votre recherche.</div>'; }
-  filtered.forEach(wine => {
+  if(!sorted.length){ list.innerHTML='<div class="empty"><strong>Aucun vin trouvé</strong>Ajoutez un vin ou modifiez votre recherche.</div>'; }
+  sorted.forEach(wine => {
     const fragment = template.content.cloneNode(true);
     const bottleCount = bottles(wine);
     const value = wineValue(wine);
@@ -41,7 +69,6 @@ function render(){
   });
   $('#wineCount').textContent = wines.length;
   $('#bottleCount').textContent = wines.reduce((sum,w) => sum + bottles(w), 0);
-  $('#redCount').textContent = wines.filter(w => w.color === 'Rouge').length;
   $('#totalValue').textContent = formatCurrency(wines.reduce((sum,w) => sum + wineValue(w), 0));
 }
 function resetForm(){ form.reset(); $('#color').value='Rouge'; $('#packaging').value='bottle'; $('#idealwinePrice').value=''; editingId=null; $('#formTitle').textContent='Ajouter un vin'; $('#submitButton').textContent='Ajouter le vin'; $('#cancelButton').classList.add('hidden'); }
@@ -58,11 +85,12 @@ function remove(id){
 form.addEventListener('submit', event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(form));
-  data.name=data.name.trim(); data.appellation=data.appellation.trim(); data.vintage=Number(data.vintage); data.quantity=Number(data.quantity); data.idealwinePrice=Number(data.idealwinePrice);
+  data.name=data.name.trim(); data.appellation=data.appellation.trim(); data.vintage=Number(data.vintage); data.quantity=Number(data.quantity); data.idealwinePrice=Number(data.idealwinePrice); data.color = String(data.color ?? 'Rouge').trim();
   if(!data.name || !data.appellation || !data.vintage || Number.isNaN(data.quantity) || data.quantity < 0 || Number.isNaN(data.idealwinePrice) || data.idealwinePrice < 0) return alert('Veuillez renseigner correctement tous les champs, y compris la cote iDealwine.');
   if(editingId) wines=wines.map(w => w.id===editingId ? {...w,...data} : w); else wines=[{id:crypto.randomUUID(),...data},...wines];
   save(); resetForm(); render();
 });
 $('#cancelButton').addEventListener('click', resetForm);
 $('#search').addEventListener('input', render);
+sortSelect.addEventListener('change', render);
 render();

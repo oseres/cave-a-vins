@@ -21,7 +21,6 @@
     <section class="stats" aria-label="Résumé de la cave">
       <div class="stat"><span>Références</span><strong id="wineCount">0</strong></div>
       <div class="stat"><span>Bouteilles</span><strong id="bottleCount">0</strong></div>
-      <div class="stat"><span>Vins rouges</span><strong id="redCount">0</strong></div>
       <div class="stat"><span>Valeur totale</span><strong id="totalValue">0 €</strong></div>
     </section>
 
@@ -45,7 +44,22 @@
       </section>
 
       <section class="card list-card">
-        <div class="section-heading list-heading"><div><p class="kicker">Votre sélection</p><h2>Les vins en cave</h2></div><input class="search" id="search" type="search" placeholder="Rechercher..."></div>
+        <div class="section-heading list-heading">
+          <div><p class="kicker">Votre sélection</p><h2>Les vins en cave</h2></div>
+          <div class="toolbar">
+            <label class="sort-label" for="sortBy">Trier</label>
+            <select id="sortBy" class="sort-select">
+              <option value="name-asc">Nom (A-Z)</option>
+              <option value="name-desc">Nom (Z-A)</option>
+              <option value="vintage-desc">Millésime (récent)</option>
+              <option value="vintage-asc">Millésime (ancien)</option>
+              <option value="price-asc">Prix (croissant)</option>
+              <option value="price-desc">Prix (décroissant)</option>
+              <option value="color-asc">Couleur</option>
+            </select>
+          </div>
+          <input class="search" id="search" type="search" placeholder="Rechercher...">
+        </div>
         <div id="wineList" class="wine-list" aria-live="polite"></div>
       </section>
     </div>
